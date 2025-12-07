@@ -25,14 +25,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: flex-start; /* Allows scrolling from top */
             min-height: 100vh;
             margin: 0;
             padding: 20px 10px;
-            overscroll-behavior: none; 
-            user-select: none;
+            
+            /* FIX: Removed 'touch-action: none' from body so page can scroll */
+            overscroll-behavior-y: contain; /* Prevents pull-to-refresh but allows scroll */
             -webkit-user-select: none;
-            touch-action: none;
+            user-select: none;
         }
 
         .container {
@@ -102,6 +103,8 @@
             display: block;
             margin: 0 auto;
             cursor: pointer; 
+            
+            /* FIX: Keep touch-action: none ONLY on the canvas */
             touch-action: none; 
             max-width: 100%; 
         }
@@ -213,7 +216,7 @@
     <h1>SLIDE CATCHER</h1>
     
     <div class="prize-alert">
-        <span class="prize-title">?? Win &#8358;500 at 1200 Points! ??</span>
+        <span class="prize-title">&#127881; Win &#8358;500 at 1200 Points! &#127881;</span>
         <span class="prize-sub">?? Only <span id="codesLeftDisplay">215</span> Codes Remaining!</span>
     </div>
 
@@ -232,7 +235,7 @@
 
     <div id="decisionModal" class="modal-overlay">
         <div class="modal-box">
-            <h2 class="modal-title">?? Milestone! ??</h2>
+            <h2 class="modal-title">&#127881; Milestone! &#127881;</h2>
             <p class="modal-text">You reached 1200 Points!<br>You can claim <strong>&#8358;500</strong> now.</p>
             <div class="modal-btn-group">
                 <button id="cashOutBtn" class="btn-cashout">?? Cash Out &#8358;500</button>
@@ -244,7 +247,7 @@
 
     <div id="claimModal" class="modal-overlay">
         <div class="modal-box">
-            <h2 class="modal-title">?? WINNER! ??</h2>
+            <h2 class="modal-title">&#127881; WINNER! &#127881;</h2>
             <p class="modal-text">Congratulations! You won:</p>
             <span id="finalWinAmount" class="win-amount">&#8358;500</span>
             <p class="modal-text">Your Claim Code:</p>
@@ -387,20 +390,6 @@
             gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
             oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.1);
-        } else if (type === 'wide') {
-            oscillator.type = 'triangle';
-            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
-            oscillator.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.2);
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
-        } else if (type === 'narrow') {
-            oscillator.type = 'sawtooth';
-            oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
-            oscillator.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.2);
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
         } else if (type === 'life') {
             oscillator.type = 'sine';
             oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
@@ -409,21 +398,20 @@
             gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
             oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.4);
-        } else if (type === 'slow') {
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); 
-            oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.3); 
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
-            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.3);
-        } else if (type === 'ghost') {
+        } else if (type === 'ghost' || type === 'slow') {
             oscillator.type = 'square';
-            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime); 
-            oscillator.frequency.linearRampToValueAtTime(250, audioCtx.currentTime + 0.1); 
-            oscillator.frequency.linearRampToValueAtTime(200, audioCtx.currentTime + 0.2); 
-            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
-            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.3);
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
+        } else if (type === 'wide' || type === 'narrow') {
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
         }
     }
 
@@ -468,7 +456,7 @@
         claimModal.style.display = 'none';
         restartBtn.style.display = 'inline-block';
         ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#2ecc71'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.fillText("?? CASHED OUT! ??", canvas.width/2, canvas.height/2);
+        ctx.fillStyle = '#2ecc71'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.fillText("\uD83C\uDF89 CASHED OUT! \uD83C\uDF89", canvas.width/2, canvas.height/2);
     });
 
     function generateWinningCode() {
@@ -528,7 +516,7 @@
             if (this.type === 'ghost') { ctx.strokeStyle = '#555'; ctx.lineWidth = 1; ctx.stroke(); }
             ctx.closePath();
             ctx.fillStyle = this.type === 'normal' ? 'transparent' : (this.type === 'ghost' ? '#000' : '#fff');
-            if (this.type === 'life') this.drawText('+1'); if (this.type === 'slow') { ctx.fillStyle='#000'; this.drawText('Slow'); } if (this.type === 'ghost') this.drawText('??');
+            if (this.type === 'life') this.drawText('+1'); if (this.type === 'slow') { ctx.fillStyle='#000'; this.drawText('Slow'); } if (this.type === 'ghost') this.drawText('\uD83D\uDC7B'); // Ghost emoji
         }
         drawText(txt) { ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, this.x, this.y + 1); }
         update() { this.y += this.speed; }
@@ -612,9 +600,9 @@
         if (securedAmount === 1000) { finalWonAmount = 1000; showWinnerScreen(); return; }
         isPlaying = false; isPaused = false; pauseBtn.disabled = true; cancelAnimationFrame(animationId);
         ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        let msg = "GAME OVER"; let subMsg = "Win: ?0"; let color = "#ff4757";
-        if (isRiskingIt) { msg = "RISK FAILED"; subMsg = "You lost the ?500"; }
-        else if (securedAmount === 1000) { msg = "?? JACKPOT! ??"; subMsg = "You won ?1,000"; color = "#f1c40f"; } 
+        let msg = "GAME OVER"; let subMsg = "Win: \u20A60"; let color = "#ff4757";
+        if (isRiskingIt) { msg = "RISK FAILED"; subMsg = "You lost the \u20A6500"; }
+        else if (securedAmount === 1000) { msg = "\uD83C\uDF89 JACKPOT! \uD83C\uDF89"; subMsg = "You won \u20A61,000"; color = "#f1c40f"; } 
         
         ctx.fillStyle = color; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.fillText(msg, canvas.width / 2, canvas.height / 2 - 20);
         ctx.fillStyle = '#fff'; ctx.font = '20px Arial'; ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 20);
