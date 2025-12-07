@@ -25,13 +25,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Changed to start to allow scrolling */
+            justify-content: flex-start;
             min-height: 100vh;
             margin: 0;
-            padding: 20px 10px; /* Added padding for scroll space */
-            /* REMOVED overflow:hidden to allow scrolling */
-            -webkit-user-select: none; /* Keep text unselectable for game feel */
+            padding: 20px 10px;
+            overscroll-behavior: none; 
             user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
         }
 
         .container {
@@ -59,22 +60,22 @@
         .prize-alert {
             background: linear-gradient(135deg, #f1c40f, #f39c12);
             color: #000;
-            padding: 12px;
+            padding: 15px;
             border-radius: 12px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
             animation: pulse 2s infinite;
             border: 2px solid #fff;
         }
         
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3); }
-            50% { transform: scale(1.02); box-shadow: 0 4px 25px rgba(241, 196, 15, 0.6); }
-            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
 
-        .prize-title { font-weight: 900; font-size: 1.1rem; display: block; margin-bottom: 2px; }
-        .prize-sub { font-size: 0.85rem; opacity: 0.9; font-weight: 700; }
+        .prize-title { font-weight: 900; font-size: 1.1rem; display: block; margin-bottom: 4px; }
+        .prize-sub { font-size: 0.9rem; opacity: 0.9; font-weight: 700; }
 
         .score-board {
             display: flex;
@@ -101,7 +102,7 @@
             display: block;
             margin: 0 auto;
             cursor: pointer; 
-            touch-action: none; /* Prevents scroll ONLY inside the game box */
+            touch-action: none; 
             max-width: 100%; 
         }
 
@@ -173,7 +174,7 @@
         }
         .btn-claim:hover { background-color: var(--wa-hover); }
 
-        /* CONTROLS ROW */
+        /* CONTROLS */
         .controls-row { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
 
         .control-toggle {
@@ -188,6 +189,7 @@
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #ccc; }
 
+        /* FOOTER */
         .divider { height: 1px; background-color: #ddd; margin: 2rem 0; }
         .projects-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .portfolio-link {
@@ -211,7 +213,7 @@
     <h1>SLIDE CATCHER</h1>
     
     <div class="prize-alert">
-        <span class="prize-title">?? Win ?500 at 1200 Points! ??</span>
+        <span class="prize-title">?? Win &#8358;500 at 1200 Points! ??</span>
         <span class="prize-sub">?? Only <span id="codesLeftDisplay">215</span> Codes Remaining!</span>
     </div>
 
@@ -231,12 +233,12 @@
     <div id="decisionModal" class="modal-overlay">
         <div class="modal-box">
             <h2 class="modal-title">?? Milestone! ??</h2>
-            <p class="modal-text">You reached 1200 Points!<br>You can claim <strong>?500</strong> now.</p>
+            <p class="modal-text">You reached 1200 Points!<br>You can claim <strong>&#8358;500</strong> now.</p>
             <div class="modal-btn-group">
-                <button id="cashOutBtn" class="btn-cashout">?? Cash Out ?500</button>
-                <button id="riskBtn" class="btn-risk">?? Risk it for ?1,000</button>
+                <button id="cashOutBtn" class="btn-cashout">?? Cash Out &#8358;500</button>
+                <button id="riskBtn" class="btn-risk">?? Risk it for &#8358;1,000</button>
             </div>
-            <p style="font-size:0.8rem; color:#999; margin-top:15px;">Target for ?1,000 is 3000 points.</p>
+            <p style="font-size:0.8rem; color:#999; margin-top:15px;">Target for &#8358;1,000 is 3000 points.</p>
         </div>
     </div>
 
@@ -244,7 +246,7 @@
         <div class="modal-box">
             <h2 class="modal-title">?? WINNER! ??</h2>
             <p class="modal-text">Congratulations! You won:</p>
-            <span id="finalWinAmount" class="win-amount">?500</span>
+            <span id="finalWinAmount" class="win-amount">&#8358;500</span>
             <p class="modal-text">Your Claim Code:</p>
             <div id="finalWinCode" class="win-code-box">Loading...</div>
             
@@ -385,6 +387,20 @@
             gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
             oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.1);
+        } else if (type === 'wide') {
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
+        } else if (type === 'narrow') {
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
         } else if (type === 'life') {
             oscillator.type = 'sine';
             oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
@@ -393,6 +409,21 @@
             gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
             oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.4);
+        } else if (type === 'slow') {
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.3); 
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'ghost') {
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime); 
+            oscillator.frequency.linearRampToValueAtTime(250, audioCtx.currentTime + 0.1); 
+            oscillator.frequency.linearRampToValueAtTime(200, audioCtx.currentTime + 0.2); 
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.3);
         }
     }
 
@@ -452,9 +483,9 @@
         isPlaying = false;
         cancelAnimationFrame(animationId);
         const code = generateWinningCode();
-        finalWinAmount.textContent = `?${finalWonAmount.toLocaleString()}`;
+        finalWinAmount.innerHTML = `&#8358;${finalWonAmount.toLocaleString()}`;
         finalWinCode.textContent = code;
-        const message = `Hello! I played SLIDE CATCHER. I scored ${score} points and WON ?${finalWonAmount.toLocaleString()}! My Claim Code is: ${code}`;
+        const message = `Hello! I played SLIDE CATCHER. I scored ${score} points and WON &#8358;${finalWonAmount.toLocaleString()}! My Claim Code is: ${code}`;
         whatsappClaimLink.href = `https://wa.me/2349042427548?text=${encodeURIComponent(message)}`;
         claimModal.style.display = 'flex';
     }
@@ -545,11 +576,11 @@
                 }
                 
                 if (ball.type === 'normal') playSound('normal');
-                else if (ball.type === 'wide') { if(player.width < MAX_WIDTH) { player.width += 15; if (player.x + player.width > canvas.width) player.x = canvas.width - player.width; } if (!ghostMode) { player.color = '#2ecc71'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } } 
-                else if (ball.type === 'narrow') { if(player.width > MIN_WIDTH) player.width -= 15; if (!ghostMode) { player.color = '#ff4757'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
+                else if (ball.type === 'wide') { playSound('wide'); if(player.width < MAX_WIDTH) { player.width += 15; if (player.x + player.width > canvas.width) player.x = canvas.width - player.width; } if (!ghostMode) { player.color = '#2ecc71'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } } 
+                else if (ball.type === 'narrow') { playSound('narrow'); if(player.width > MIN_WIDTH) player.width -= 15; if (!ghostMode) { player.color = '#ff4757'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
                 else if (ball.type === 'life') { playSound('life'); lives++; livesVal.textContent = lives; if (!ghostMode) { player.color = '#e056fd'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
-                else if (ball.type === 'slow') { speedReduction += 0.8; if (!ghostMode) { player.color = '#00d2d3'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
-                else if (ball.type === 'ghost') { activateGhostMode(); }
+                else if (ball.type === 'slow') { playSound('slow'); speedReduction += 0.8; if (!ghostMode) { player.color = '#00d2d3'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
+                else if (ball.type === 'ghost') { playSound('ghost'); activateGhostMode(); }
                 balls.splice(index, 1);
             }
             else if (ball.y - ball.radius > canvas.height) {
@@ -563,7 +594,9 @@
     }
 
     function startGame() {
-        if(audioCtx.state === 'suspended') audioCtx.resume();
+        if(audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
         isPlaying = true; isPaused = false; pauseBtn.disabled = false;
         score = 0; lives = 3; balls = []; player.width = 70; player.color = '#007bff';
         speedReduction = 0; ghostMode = false; milestone1200Triggered = false; isRiskingIt = false; securedAmount = 0; finalWonAmount = 0;
