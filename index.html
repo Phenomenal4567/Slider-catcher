@@ -30,8 +30,7 @@
             margin: 0;
             padding: 20px 10px;
             
-            /* FIX: Removed 'touch-action: none' from body so page can scroll */
-            overscroll-behavior-y: contain; /* Prevents pull-to-refresh but allows scroll */
+            overscroll-behavior-y: contain; 
             -webkit-user-select: none;
             user-select: none;
         }
@@ -103,8 +102,6 @@
             display: block;
             margin: 0 auto;
             cursor: pointer; 
-            
-            /* FIX: Keep touch-action: none ONLY on the canvas */
             touch-action: none; 
             max-width: 100%; 
         }
@@ -405,7 +402,7 @@
             gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
             oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
-        } else if (type === 'wide' || type === 'narrow') {
+        } else if (type === 'wide' || type === 'narrow' || type === 'danger') {
             oscillator.type = 'triangle';
             oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
             oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.2);
@@ -501,13 +498,27 @@
             this.radius = 8;
             this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
             this.y = -this.radius;
-            const rand = Math.random();
-            if (rand > 0.98) { this.type = 'life'; this.color = '#e056fd'; } 
-            else if (rand > 0.94) { this.type = 'ghost'; this.color = '#ced6e0'; } 
-            else if (rand > 0.90) { this.type = 'slow'; this.color = '#00d2d3'; } 
-            else if (rand > 0.80) { this.type = 'wide';  this.color = '#2ecc71'; } 
-            else if (rand > 0.70) { this.type = 'narrow'; this.color = '#ff4757'; } 
-            else { this.type = 'normal'; this.color = '#ffffff'; }
+            
+            let typeDetermined = false;
+
+            // --- HIDDEN MECHANIC: DANGER BALL ---
+            // Only spawns if score > 500, with a small random chance
+            if (score >= 500 && Math.random() > 0.95) {
+                this.type = 'danger';
+                this.color = '#2d3436'; // Dark grey
+                typeDetermined = true;
+            }
+
+            if (!typeDetermined) {
+                const rand = Math.random();
+                if (rand > 0.95) { this.type = 'life'; this.color = '#e056fd'; } 
+                else if (rand > 0.90) { this.type = 'ghost'; this.color = '#ced6e0'; } 
+                else if (rand > 0.85) { this.type = 'slow'; this.color = '#00d2d3'; } 
+                else if (rand > 0.75) { this.type = 'wide';  this.color = '#2ecc71'; } 
+                else if (rand > 0.65) { this.type = 'narrow'; this.color = '#ff4757'; } 
+                else { this.type = 'normal'; this.color = '#ffffff'; }
+            }
+            
             let calculatedSpeed = baseSpeed + (Math.floor(score / 5) * 0.3) - speedReduction;
             this.speed = Math.max(1.5, calculatedSpeed);
         }
@@ -515,10 +526,15 @@
             ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill();
             if (this.type === 'ghost') { ctx.strokeStyle = '#555'; ctx.lineWidth = 1; ctx.stroke(); }
             ctx.closePath();
-            ctx.fillStyle = this.type === 'normal' ? 'transparent' : (this.type === 'ghost' ? '#000' : '#fff');
-            if (this.type === 'life') this.drawText('+1'); if (this.type === 'slow') { ctx.fillStyle='#000'; this.drawText('Slow'); } if (this.type === 'ghost') this.drawText('\uD83D\uDC7B'); // Ghost emoji
+            
+            ctx.fillStyle = this.type === 'normal' ? 'transparent' : (this.type === 'ghost' || this.type === 'danger' ? '#000' : '#fff');
+            
+            if (this.type === 'life') this.drawText('+1'); 
+            else if (this.type === 'slow') { ctx.fillStyle='#000'; this.drawText('Slow'); } 
+            else if (this.type === 'ghost') this.drawText('\uD83D\uDC7B'); 
+            else if (this.type === 'danger') { ctx.font = '12px Arial'; this.drawText('\u2620\uFE0F'); } // Skull emoji
         }
-        drawText(txt) { ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, this.x, this.y + 1); }
+        drawText(txt) { ctx.font = ctx.font || '10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, this.x, this.y + 1); }
         update() { this.y += this.speed; }
     }
 
@@ -558,17 +574,47 @@
         balls.forEach((ball, index) => {
             ball.update(); ball.draw();
             if (ball.y + ball.radius >= player.y && ball.y - ball.radius <= player.y + player.height && ball.x >= player.x && ball.x <= player.x + player.width) {
-                if (ball.type !== 'life' && ball.type !== 'slow' && ball.type !== 'ghost') { 
+                // Scoring
+                if (ball.type !== 'life' && ball.type !== 'slow' && ball.type !== 'ghost' && ball.type !== 'danger') { 
                     score++; scoreVal.textContent = score; 
                     updateHighScore(); 
                 }
                 
+                // Effects
                 if (ball.type === 'normal') playSound('normal');
-                else if (ball.type === 'wide') { playSound('wide'); if(player.width < MAX_WIDTH) { player.width += 15; if (player.x + player.width > canvas.width) player.x = canvas.width - player.width; } if (!ghostMode) { player.color = '#2ecc71'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } } 
-                else if (ball.type === 'narrow') { playSound('narrow'); if(player.width > MIN_WIDTH) player.width -= 15; if (!ghostMode) { player.color = '#ff4757'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
-                else if (ball.type === 'life') { playSound('life'); lives++; livesVal.textContent = lives; if (!ghostMode) { player.color = '#e056fd'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
-                else if (ball.type === 'slow') { playSound('slow'); speedReduction += 0.8; if (!ghostMode) { player.color = '#00d2d3'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } }
-                else if (ball.type === 'ghost') { playSound('ghost'); activateGhostMode(); }
+                else if (ball.type === 'wide') { 
+                    playSound('wide'); 
+                    if(player.width < MAX_WIDTH) { player.width += 15; if (player.x + player.width > canvas.width) player.x = canvas.width - player.width; } 
+                    if (!ghostMode) { player.color = '#2ecc71'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } 
+                } 
+                else if (ball.type === 'narrow') { 
+                    playSound('narrow'); 
+                    if(player.width > MIN_WIDTH) player.width -= 15; 
+                    if (!ghostMode) { player.color = '#ff4757'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } 
+                }
+                else if (ball.type === 'life') { 
+                    playSound('life'); 
+                    // --- HIDDEN MAX LIFE CAP (12) ---
+                    if (lives < 12) {
+                        lives++; 
+                        livesVal.textContent = lives; 
+                    }
+                    if (!ghostMode) { player.color = '#e056fd'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } 
+                }
+                else if (ball.type === 'slow') { 
+                    playSound('slow'); speedReduction += 0.8; 
+                    if (!ghostMode) { player.color = '#00d2d3'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); } 
+                }
+                else if (ball.type === 'ghost') { 
+                    playSound('ghost'); activateGhostMode(); 
+                }
+                else if (ball.type === 'danger') {
+                    // --- HIDDEN DANGER EFFECT ---
+                    playSound('narrow');
+                    player.width = 70; // Reset width to default
+                    if (!ghostMode) { player.color = '#2d3436'; setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200); }
+                }
+
                 balls.splice(index, 1);
             }
             else if (ball.y - ball.radius > canvas.height) {
