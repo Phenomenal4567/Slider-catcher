@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Slider Catch</title>
+    <title>SLIDE CATCHER</title>
     <style>
         /* --- VARIABLES --- */
         :root {
@@ -47,6 +47,8 @@
         h1 {
             margin: 0 0 5px 0;
             font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .sub-text {
@@ -98,38 +100,45 @@
         .btn:active { transform: scale(0.95); }
         .btn-restart { display: none; background-color: var(--text-color); }
 
-        /* SOUND BUTTON (Text + Icon) */
-        .sound-toggle {
+        /* CONTROLS ROW */
+        .controls-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin-top: 15px;
+        }
+
+        /* TOGGLE BUTTONS (Sound & Pause) */
+        .control-toggle {
             background: #f0f0f0;
             border: none;
-            padding: 8px 16px; /* Wider padding for text */
-            border-radius: 30px; /* Pill shape */
+            padding: 8px 16px; 
+            border-radius: 30px; 
             cursor: pointer;
             color: #555;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px; /* Space between icon and text */
+            gap: 6px; 
             transition: background 0.2s;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
-        .sound-toggle:hover { background: #e0e0e0; }
-        .sound-icon { width: 18px; height: 18px; fill: currentColor; }
+        .control-toggle:hover { background: #e0e0e0; }
+        .control-icon { width: 16px; height: 16px; fill: currentColor; }
 
         /* LEGEND */
         .legend {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             margin-top: 15px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #555;
             flex-wrap: wrap;
         }
         .legend-item { display: flex; align-items: center; gap: 4px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #ccc; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #ccc; }
 
         /* FOOTER */
         .divider { height: 1px; background-color: #ddd; margin: 2rem 0; }
@@ -160,7 +169,7 @@
 <body>
 
 <div class="container">
-    <h1>Slider Catch</h1>
+    <h1>SLIDE CATCHER</h1>
     <p class="sub-text">Drag screen to move • Colors are optional!</p>
     
     <div class="score-board">
@@ -175,18 +184,31 @@
         <div class="legend-item"><div class="dot" style="background:#2ecc71"></div>Wide</div>
         <div class="legend-item"><div class="dot" style="background:#ff4757"></div>Trap</div>
         <div class="legend-item"><div class="dot" style="background:#00d2d3"></div>Slow</div>
+        <div class="legend-item"><div class="dot" style="background:#ced6e0"></div>Ghost</div>
         <div class="legend-item"><div class="dot" style="background:#e056fd"></div>+1 Life</div>
     </div>
 
-    <button id="soundBtn" class="sound-toggle" title="Toggle Sound">
-        <svg id="icon-sound-on" class="sound-icon" viewBox="0 0 24 24">
-            <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zm-4 0h-2.5l-5 5H2v6h2.5l5 5h2.5V3.23z"/>
-        </svg>
-        <svg id="icon-sound-off" class="sound-icon" style="display:none;" viewBox="0 0 24 24">
-             <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-        </svg>
-        <span>Sound</span>
-    </button>
+    <div class="controls-row">
+        <button id="soundBtn" class="control-toggle" title="Toggle Sound">
+            <svg id="icon-sound-on" class="control-icon" viewBox="0 0 24 24">
+                <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zm-4 0h-2.5l-5 5H2v6h2.5l5 5h2.5V3.23z"/>
+            </svg>
+            <svg id="icon-sound-off" class="control-icon" style="display:none;" viewBox="0 0 24 24">
+                 <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+            </svg>
+            <span>Sound</span>
+        </button>
+
+        <button id="pauseBtn" class="control-toggle" title="Pause Game" disabled>
+            <svg id="icon-pause" class="control-icon" viewBox="0 0 24 24">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+            <svg id="icon-play" class="control-icon" style="display:none;" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <span id="pauseText">Pause</span>
+        </button>
+    </div>
 
     <button id="startBtn" class="btn">Start Game</button>
     <button id="restartBtn" class="btn btn-restart">Try Again</button>
@@ -227,21 +249,32 @@
     const livesEl = document.getElementById('livesEl');
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
-    const soundBtn = document.getElementById('soundBtn');
     
-    const iconOn = document.getElementById('icon-sound-on');
-    const iconOff = document.getElementById('icon-sound-off');
+    // Toggle Buttons
+    const soundBtn = document.getElementById('soundBtn');
+    const iconSoundOn = document.getElementById('icon-sound-on');
+    const iconSoundOff = document.getElementById('icon-sound-off');
+
+    const pauseBtn = document.getElementById('pauseBtn');
+    const iconPause = document.getElementById('icon-pause');
+    const iconPlay = document.getElementById('icon-play');
+    const pauseText = document.getElementById('pauseText');
 
     // Game Variables
     let isPlaying = false;
+    let isPaused = false;
     let score = 0;
     let lives = 3;
     let animationId;
     let frameCount = 0;
     let baseSpeed = 2; 
     let spawnRate = 60;
-    let speedReduction = 0; // New variable to track slow down amount
+    let speedReduction = 0;
     let soundEnabled = true;
+    
+    // Ghost Mode Variables
+    let ghostMode = false;
+    let ghostTimer = null;
     
     // LIMITS SETTINGS
     const MAX_WIDTH = 150; 
@@ -299,7 +332,6 @@
             oscillator.stop(audioCtx.currentTime + 0.4);
         }
         else if (type === 'slow') {
-            // Sliding Down / Cooling sound
             oscillator.type = 'sine';
             oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); 
             oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.3); 
@@ -308,18 +340,65 @@
             oscillator.start();
             oscillator.stop(audioCtx.currentTime + 0.3);
         }
+        else if (type === 'ghost') {
+            // Eerie wobble sound
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime); 
+            oscillator.frequency.linearRampToValueAtTime(250, audioCtx.currentTime + 0.1); 
+            oscillator.frequency.linearRampToValueAtTime(200, audioCtx.currentTime + 0.2); 
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.3);
+        }
     }
 
+    // --- BUTTON LISTENERS ---
+    
     soundBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
         if (soundEnabled) {
-            iconOn.style.display = 'block';
-            iconOff.style.display = 'none';
+            iconSoundOn.style.display = 'block';
+            iconSoundOff.style.display = 'none';
         } else {
-            iconOn.style.display = 'none';
-            iconOff.style.display = 'block';
+            iconSoundOn.style.display = 'none';
+            iconSoundOff.style.display = 'block';
         }
+        // Remove focus to prevent sticky hover states on mobile
+        soundBtn.blur();
     });
+
+    pauseBtn.addEventListener('click', () => {
+        if (!isPlaying) return; // Can't pause if not playing
+
+        isPaused = !isPaused;
+        
+        if (isPaused) {
+            // Game Paused
+            iconPause.style.display = 'none';
+            iconPlay.style.display = 'block';
+            pauseText.textContent = "Play";
+            cancelAnimationFrame(animationId); // Stop loop
+            
+            // Draw Pause Text
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText("PAUSED", canvas.width/2, canvas.height/2);
+            
+        } else {
+            // Game Resumed
+            iconPause.style.display = 'block';
+            iconPlay.style.display = 'none';
+            pauseText.textContent = "Pause";
+            animate(); // Restart loop
+        }
+        pauseBtn.blur();
+    });
+
+    // --- GAME LOGIC ---
 
     const player = {
         x: 125,
@@ -333,6 +412,7 @@
 
     // Movement Logic
     function movePlayer(clientX) {
+        if (isPaused) return; // Don't move if paused
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         let mouseX = (clientX - rect.left) * scaleX;
@@ -344,7 +424,6 @@
 
     canvas.addEventListener('mousemove', (e) => { if(isPlaying) movePlayer(e.clientX); });
     
-    // Touch Logic
     canvas.addEventListener('touchstart', (e) => {
         if(e.target === canvas) e.preventDefault(); 
     }, { passive: false });
@@ -365,16 +444,19 @@
             
             const rand = Math.random();
             // PROBABILITY DISTRIBUTION
-            if (rand > 0.97) { // 3% Chance - Life
+            if (rand > 0.98) { // 2% Chance - Life
                 this.type = 'life';
                 this.color = '#e056fd'; 
-            } else if (rand > 0.92) { // 5% Chance - Slow Down
+            } else if (rand > 0.94) { // 4% Chance - Ghost
+                this.type = 'ghost';
+                this.color = '#ced6e0'; // Silver/Gray
+            } else if (rand > 0.90) { // 4% Chance - Slow Down
                 this.type = 'slow';
-                this.color = '#00d2d3'; // Cyan/Ice
-            } else if (rand > 0.82) { // 10% Chance - Wide
+                this.color = '#00d2d3'; 
+            } else if (rand > 0.80) { // 10% Chance - Wide
                 this.type = 'wide';  
                 this.color = '#2ecc71'; 
-            } else if (rand > 0.72) { // 10% Chance - Narrow
+            } else if (rand > 0.70) { // 10% Chance - Narrow
                 this.type = 'narrow'; 
                 this.color = '#ff4757'; 
             } else {
@@ -382,8 +464,6 @@
                 this.color = '#ffffff'; 
             }
 
-            // Calculate Speed: Base + Difficulty - Reduction
-            // Minimum speed is clamped at 1.5
             let calculatedSpeed = baseSpeed + (Math.floor(score / 5) * 0.3) - speedReduction;
             this.speed = Math.max(1.5, calculatedSpeed);
         }
@@ -393,6 +473,12 @@
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fillStyle = this.color;
             ctx.fill();
+            // Stroke for ghost ball to make it visible against grey background if needed
+            if (this.type === 'ghost') {
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
             ctx.closePath();
 
             // Text labels
@@ -410,6 +496,13 @@
                 ctx.textBaseline = 'middle';
                 ctx.fillText('Slow', this.x, this.y + 1);
             }
+            if (this.type === 'ghost') {
+                ctx.fillStyle = '#000000';
+                ctx.font = '9px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('??', this.x, this.y + 1);
+            }
         }
 
         update() {
@@ -417,16 +510,41 @@
         }
     }
 
+    function activateGhostMode() {
+        ghostMode = true;
+        // Visual indicator: Semi-transparent paddle
+        player.color = 'rgba(255, 255, 255, 0.4)'; 
+        
+        // Clear existing timer if user catches another ghost ball while active
+        if (ghostTimer) clearTimeout(ghostTimer);
+
+        ghostTimer = setTimeout(() => {
+            ghostMode = false;
+            player.color = '#007bff'; // Revert color
+        }, 3000); // 3 Seconds
+    }
+
     function animate() {
-        if (!isPlaying) return;
+        if (!isPlaying || isPaused) return;
 
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // Draw Player
+        // If ghost mode, use the special color set in activateGhostMode
+        // If not, ensure it is blue (or red/green from other effects)
+        if (!ghostMode && player.color === 'rgba(255, 255, 255, 0.4)') {
+             player.color = '#007bff';
+        }
+
         ctx.fillStyle = player.color;
         ctx.fillRect(player.x, player.y, player.width, player.height);
-        ctx.fillStyle = 'rgba(255,255,255,0.3)';
-        ctx.fillRect(player.x + player.width/2 - 2, player.y + 2, 4, 11);
+        
+        // Draw Grip
+        if (!ghostMode) {
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.fillRect(player.x + player.width/2 - 2, player.y + 2, 4, 11);
+        }
 
         frameCount++;
         let currentSpawnRate = Math.max(20, spawnRate - (score * 0.5));
@@ -447,8 +565,7 @@
             ) {
                 // Caught!
                 
-                // Score update
-                if (ball.type !== 'life' && ball.type !== 'slow') {
+                if (ball.type !== 'life' && ball.type !== 'slow' && ball.type !== 'ghost') {
                     score++;
                     scoreEl.textContent = `Score: ${score}`;
                 }
@@ -462,38 +579,55 @@
                         player.width += 15;
                         if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
                     }
-                    player.color = '#2ecc71'; 
-                    setTimeout(() => player.color = '#007bff', 200);
+                    if (!ghostMode) {
+                        player.color = '#2ecc71'; 
+                        setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200);
+                    }
                 } 
                 else if (ball.type === 'narrow') {
                     playSound('narrow');
                     if(player.width > MIN_WIDTH) player.width -= 15;
-                    player.color = '#ff4757'; 
-                    setTimeout(() => player.color = '#007bff', 200);
+                    if (!ghostMode) {
+                        player.color = '#ff4757'; 
+                        setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200);
+                    }
                 }
                 else if (ball.type === 'life') {
                     playSound('life');
                     lives++;
                     livesEl.textContent = `Lives: ${lives}`;
-                    player.color = '#e056fd'; 
-                    setTimeout(() => player.color = '#007bff', 200);
+                    if (!ghostMode) {
+                        player.color = '#e056fd'; 
+                        setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200);
+                    }
                 }
                 else if (ball.type === 'slow') {
                     playSound('slow');
-                    speedReduction += 0.8; // Reduces future speed significantly
-                    player.color = '#00d2d3'; // Cyan flash
-                    setTimeout(() => player.color = '#007bff', 200);
+                    speedReduction += 0.8;
+                    if (!ghostMode) {
+                        player.color = '#00d2d3'; 
+                        setTimeout(() => { if(!ghostMode) player.color = '#007bff'; }, 200);
+                    }
+                }
+                else if (ball.type === 'ghost') {
+                    playSound('ghost');
+                    activateGhostMode();
                 }
 
                 balls.splice(index, 1);
             }
             else if (ball.y - ball.radius > canvas.height) {
+                // Ball hit bottom (Missed)
                 balls.splice(index, 1);
                 
                 if (ball.type === 'normal') {
-                    lives--;
-                    livesEl.textContent = `Lives: ${lives}`;
-                    if (lives <= 0) endGame();
+                    // GHOST MODE CHECK:
+                    // If Ghost Mode is active, missing a normal ball does NOT reduce lives.
+                    if (!ghostMode) {
+                        lives--;
+                        livesEl.textContent = `Lives: ${lives}`;
+                        if (lives <= 0) endGame();
+                    }
                 }
             }
         });
@@ -504,22 +638,35 @@
     function startGame() {
         if(audioCtx.state === 'suspended') audioCtx.resume();
         isPlaying = true;
+        isPaused = false;
+        pauseBtn.disabled = false;
+        
         score = 0;
         lives = 3;
         balls = [];
         player.width = 70;
-        speedReduction = 0; // Reset speed reduction
+        player.color = '#007bff';
+        speedReduction = 0;
+        ghostMode = false;
+        if (ghostTimer) clearTimeout(ghostTimer);
+        
         scoreEl.textContent = 'Score: 0';
         livesEl.textContent = 'Lives: 3';
         
+        // Reset UI
         startBtn.style.display = 'none';
         restartBtn.style.display = 'none';
+        iconPause.style.display = 'block';
+        iconPlay.style.display = 'none';
+        pauseText.textContent = "Pause";
         
         animate();
     }
 
     function endGame() {
         isPlaying = false;
+        isPaused = false;
+        pauseBtn.disabled = true;
         cancelAnimationFrame(animationId);
         
         ctx.fillStyle = 'rgba(0,0,0,0.85)';
